@@ -32,9 +32,9 @@ class MultithreadedSimpleXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
 
 
 # Connection related functions
-server = MultithreadedSimpleXMLRPCServer((LOCALHOST, 40405))
+server = MultithreadedSimpleXMLRPCServer((LOCALHOST, 40408))
 server.RequestHandlerClass.protocol_version = "HTTP/1.1"
-print "Listening on port 40405..."
+print "Listening on port 40408..."
 
 server.register_function(showpopup,"showpopup")
 server.register_function(cancelpopup,"cancelpopup")
