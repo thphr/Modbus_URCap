@@ -23,6 +23,7 @@ def init_modbus_communication(port,slaveaddress):
   return True
 
 def tool_modbus_write(register_address, data):
+  global instrument
   try:
     instrument.write_register(register_address,data,0)
   except Exception:
@@ -31,6 +32,7 @@ def tool_modbus_write(register_address, data):
   return "Succesfully executed!"
 
 def tool_modbus_read(register_address):
+  global instrument
   try:
     value = int(instrument.read_register(register_address,0))
   except Exception:
