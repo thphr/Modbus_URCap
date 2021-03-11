@@ -33,13 +33,6 @@ public class ModbusDaemonInterface {
 			return false;
 		}
 	}
-	
-	
-//	public boolean showPopup() throws XmlRpcException, UnknownResponseException {
-//		Object result  = client.execute("showpopup", new ArrayList<String>());
-//		return processBoolean(result);
-//	}
-
 
 	
 	private boolean processBoolean(Object response) throws UnknownResponseException {

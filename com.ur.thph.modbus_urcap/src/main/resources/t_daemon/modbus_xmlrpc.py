@@ -30,8 +30,8 @@ def init_modbus_communication(port,slaveaddress):
   return True
 
 def tool_modbus_write(register_address, data):
-  global instrument
   try:
+    global instrument
     instrument.write_register(register_address,data,0)
   except Exception:
     Logger.error("Error in modbus write method", exc_info=True)
@@ -39,8 +39,9 @@ def tool_modbus_write(register_address, data):
   return "Succesfully executed!"
 
 def tool_modbus_read(register_address):
-  global instrument
+  global value
   try:
+    global instrument
     value = int(instrument.read_register(register_address,0))
   except Exception:
     Logger.error("Error in modbus read method", exc_info=True)

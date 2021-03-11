@@ -25,7 +25,7 @@ public class ModbusDaemonService implements DaemonService {
 	@Override
 	public URL getExecutable() {
 		try {
-			return new URL("file:t_daemon/requestpose_xmlrpc.py");
+			return new URL("file:t_daemon/modbus_xmlrpc");
 		} catch (MalformedURLException e) {
 			System.out.println("Not able to install daemon resource file");
 			return null;

@@ -26,7 +26,7 @@ public class DaemonInstallationNodeContribution implements InstallationNodeContr
 	private static final String HOST = "127.0.0.1";
 	
 	private static final String ENABLED_KEY = "enabled";
-	private static final String XMLRPC_VARIABLE = "modbus_daemon_swing";
+	private static final String XMLRPC_VARIABLE = "modbus_xmlrpc";
 	
 	
 
@@ -82,7 +82,29 @@ public class DaemonInstallationNodeContribution implements InstallationNodeContr
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40408/RPC2\")");
+		
+		writer.appendLine("isConnected = modbus_xmlrpc.reachable()");
+		writer.appendLine("if ( isConnected != True):");
+		writer.appendLine("popup(\"Modbus xmlrpc is not available!\")");
+		writer.appendLine("end");
+		
+		//Modbus init method: ex --> init_modbus('/dev/ttyTool',65)
+		writer.appendLine("def init_tool_modbus(port,address):");
+		writer.appendLine("local response = modbus_xmlrpc.init_modbus_communication(\"port\",address)");
+		writer.appendLine("return response");
+		writer.appendLine("end");
+		
+		//Modbus read method: ex --> tool_modbus_write((0, 511)
+		writer.appendLine("def tool_modbus_write(register_address, data):");
+		writer.appendLine("local response = modbus_xmlrpc.tool_modbus_write(register_address, data)");
+		writer.appendLine("return response");
+		writer.appendLine("end");
 
+		//Modbus write method: ex --> tool_modbus_read(258)
+		writer.appendLine("def tool_modbus_read(register_address):");
+		writer.appendLine("local response = modbus_xmlrpc.tool_modbus_read(register_address)");
+		writer.appendLine("return response");
+		writer.appendLine("end");
 	}
 	
 	private void updateUI() {
