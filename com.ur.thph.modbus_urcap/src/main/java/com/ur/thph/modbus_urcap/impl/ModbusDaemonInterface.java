@@ -27,7 +27,7 @@ public class ModbusDaemonInterface {
 
 	public boolean isReachable() {
 		try {
-			this.client.execute("isEnabled", new ArrayList<String>());
+			this.client.execute("reachable", new ArrayList<String>());
 			return true;
 		} catch (XmlRpcException e) {
 			return false;
@@ -35,20 +35,12 @@ public class ModbusDaemonInterface {
 	}
 	
 	
-	public boolean showPopup() throws XmlRpcException, UnknownResponseException {
-		Object result  = client.execute("showpopup", new ArrayList<String>());
-		return processBoolean(result);
-	}
-	
-	public boolean cancelPopup() throws XmlRpcException, UnknownResponseException {
-		Object result = client.execute("cancelpopup", new ArrayList<String>());
-		return processBoolean(result);
-	}
-	
-	public boolean isEnabled() throws XmlRpcException, UnknownResponseException {
-		Object result = client.execute("isEnabled", new ArrayList<String>());
-		return processBoolean(result);
-	}
+//	public boolean showPopup() throws XmlRpcException, UnknownResponseException {
+//		Object result  = client.execute("showpopup", new ArrayList<String>());
+//		return processBoolean(result);
+//	}
+
+
 	
 	private boolean processBoolean(Object response) throws UnknownResponseException {
 		if (response instanceof Boolean) {

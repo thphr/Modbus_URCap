@@ -21,6 +21,9 @@ LOCALHOST = "127.0.0.1"
 instrument = None 
 value = ""
 
+def reachable():
+  return True
+
 def init_modbus_communication(port,slaveaddress):
   global instrument
   instrument = modbus.Instrument(port,slaveaddress)
@@ -54,6 +57,7 @@ server = MultithreadedSimpleXMLRPCServer((LOCALHOST, 40408))
 server.RequestHandlerClass.protocol_version = "HTTP/1.1"
 print "Listening on port 40408..."
 
+server.register_function(reachable,"reachable")
 server.register_function(init_modbus_communication,"init_modbus_communication")
 server.register_function(tool_modbus_read,"tool_modbus_read")
 server.register_function(tool_modbus_write,"tool_modbus_write")
