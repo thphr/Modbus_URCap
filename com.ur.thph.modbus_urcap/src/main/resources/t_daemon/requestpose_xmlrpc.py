@@ -4,9 +4,13 @@ import sys
 import socket
 import struct
 import time
-import minimalmodbus as modbus
-import serial 
 import logging as Logger
+import os, sys
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
+import minimalmodbus as modbus
+import serial
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SocketServer import ThreadingMixIn
