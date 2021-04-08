@@ -10,12 +10,12 @@ def init_modbus(address):
  return response
 end
 
-def read_modbus(address, data):
+def write_modbus(address, data):
  local response = modbus_xmlrpc.tool_modbus_write(address, data)
  return response
 end
 
-def write_modbus(address):
+def read_modbus(address):
  local response = modbus_xmlrpc.tool_modbus_read(address)
  return response
 end
