@@ -24,9 +24,9 @@ value = ""
 def reachable():
   return True
 
-def init_modbus_communication(port,slaveaddress):
+def init_modbus_communication(slaveaddress):
   global instrument
-  instrument = modbus.Instrument(port,slaveaddress)
+  instrument = modbus.Instrument('/dev/ttyTool',slaveaddress)
   return True
 
 def tool_modbus_write(register_address, data):

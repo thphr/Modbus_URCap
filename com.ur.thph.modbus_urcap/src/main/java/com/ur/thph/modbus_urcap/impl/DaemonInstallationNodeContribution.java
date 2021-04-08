@@ -88,9 +88,9 @@ public class DaemonInstallationNodeContribution implements InstallationNodeContr
 		writer.appendLine("popup(\"Modbus xmlrpc is not available!\")");
 		writer.appendLine("end");
 		
-		//Modbus init method: ex --> init_modbus('/dev/ttyTool',65)
-		writer.appendLine("def init_tool_modbus(port,address):");
-		writer.appendLine("local response = modbus_xmlrpc.init_modbus_communication(\"port\",address)");
+		//Modbus init method: ex --> init_modbus(65)
+		writer.appendLine("def init_tool_modbus(address):");
+		writer.appendLine("local response = modbus_xmlrpc.init_modbus_communication(address)");
 		writer.appendLine("return response");
 		writer.appendLine("end");
 		
