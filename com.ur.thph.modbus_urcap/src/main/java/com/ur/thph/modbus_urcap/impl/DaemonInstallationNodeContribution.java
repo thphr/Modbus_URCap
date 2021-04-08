@@ -8,37 +8,44 @@ import com.ur.urcap.api.contribution.DaemonContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.contribution.installation.CreationContext;
 import com.ur.urcap.api.contribution.installation.InstallationAPIProvider;
+import com.ur.urcap.api.domain.InstallationAPI;
 import com.ur.urcap.api.domain.data.DataModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
 
 public class DaemonInstallationNodeContribution implements InstallationNodeContribution {
-	
+
 	private final ModbusDaemonService modbusDaemonService;
 	private ModbusDaemonInterface modbusDaemonInterface;
-	
+
+	private static final String SCRIPT_FILE_PATH = "/script/modbus.script";
+	private ScriptHandler handler;
+	private InstallationAPI api;
+
 	private final DaemonInstallationNodeView view;
-	
+
 	private Timer uiTimer;
 	private boolean pauseTimer;
 	private DataModel model;
-	
+
 	private static final int PORT = 40408;
 	private static final String HOST = "127.0.0.1";
-	
+
 	private static final String ENABLED_KEY = "enabled";
 	private static final String XMLRPC_VARIABLE = "modbus_xmlrpc";
-	
-	
 
 	public DaemonInstallationNodeContribution(InstallationAPIProvider apiProvider, DaemonInstallationNodeView view,
 			DataModel model, CreationContext context, ModbusDaemonService modbusDaemonService) {
-		
+
 		this.modbusDaemonService = modbusDaemonService;
 		this.modbusDaemonInterface = new ModbusDaemonInterface(HOST, PORT);
 		this.pauseTimer = false;
 		this.model = model;
 		this.view = view;
-	
+
+		this.api = apiProvider.getInstallationAPI();
+		this.handler = new ScriptHandler(this.api);
+		this.handler.addFunctionModels(SCRIPT_FILE_PATH);
+
 		applyDesiredDaemonStatus();
 	}
 
@@ -81,32 +88,11 @@ public class DaemonInstallationNodeContribution implements InstallationNodeContr
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40408/RPC2\")");
-		
-		writer.appendLine("isConnected = modbus_xmlrpc.reachable()");
-		writer.appendLine("if ( isConnected != True):");
-		writer.appendLine("popup(\"Modbus xmlrpc is not available!\")");
-		writer.appendLine("end");
-		
-		//Modbus init method: ex --> init_modbus(65)
-		writer.appendLine("def init_tool_modbus(address):");
-		writer.appendLine("local response = modbus_xmlrpc.init_modbus_communication(address)");
-		writer.appendLine("return response");
-		writer.appendLine("end");
-		
-		//Modbus read method: ex --> tool_modbus_write((0, 511)
-		writer.appendLine("def tool_modbus_write(register_address, data):");
-		writer.appendLine("local response = modbus_xmlrpc.tool_modbus_write(register_address, data)");
-		writer.appendLine("return response");
-		writer.appendLine("end");
 
-		//Modbus write method: ex --> tool_modbus_read(258)
-		writer.appendLine("def tool_modbus_read(register_address):");
-		writer.appendLine("local response = modbus_xmlrpc.tool_modbus_read(register_address)");
-		writer.appendLine("return response");
-		writer.appendLine("end");
+		this.handler.readScriptFile(SCRIPT_FILE_PATH, writer);
+
 	}
-	
+
 	private void updateUI() {
 		DaemonContribution.State state = getDaemonState();
 
@@ -133,14 +119,14 @@ public class DaemonInstallationNodeContribution implements InstallationNodeContr
 
 		view.setStatusLabel(text);
 	}
-	
-	
+
 	private DaemonContribution.State getDaemonState() {
 		return this.modbusDaemonService.getDaemon().getState();
 
 	}
+
 	private Boolean isDaemonEnabled() {
-		return  Boolean.valueOf(model.get(ENABLED_KEY, true)); // This daemon is enabled by default
+		return Boolean.valueOf(model.get(ENABLED_KEY, true)); // This daemon is enabled by default
 	}
 
 	public void onStartClick() {
@@ -152,7 +138,6 @@ public class DaemonInstallationNodeContribution implements InstallationNodeContr
 		model.set(ENABLED_KEY, false);
 		applyDesiredDaemonStatus();
 	}
-
 
 	public ModbusDaemonInterface getXmlRpcDaemonInterface() {
 		return this.modbusDaemonInterface;
@@ -170,9 +155,9 @@ public class DaemonInstallationNodeContribution implements InstallationNodeContr
 						pauseTimer = true;
 						awaitDaemonRunning(5000);
 						boolean test = modbusDaemonInterface.isReachable();
-						if(test) {
+						if (test) {
 							System.out.println("Daemon is running");
-						}else {
+						} else {
 							System.out.println("Daemon is not running");
 						}
 					} catch (Exception e) {

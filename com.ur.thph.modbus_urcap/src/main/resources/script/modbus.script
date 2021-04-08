@@ -1,0 +1,21 @@
+modbus_xmlrpc = rpc_factory("xmlrpc","http://127.0.0.1:40408/RPC2")
+isConnected = modbus_xmlrpc.reachable()
+
+if ( isConnected != True):
+ popup("Modbus xmlrpc is not available!")
+end
+
+def init_modbus(address):
+ local response = modbus_xmlrpc.init_modbus_communication(address)
+ return response
+end
+
+def read_modbus(address, data):
+ local response = modbus_xmlrpc.tool_modbus_write(address, data)
+ return response
+end
+
+def write_modbus(address):
+ local response = modbus_xmlrpc.tool_modbus_read(address)
+ return response
+end

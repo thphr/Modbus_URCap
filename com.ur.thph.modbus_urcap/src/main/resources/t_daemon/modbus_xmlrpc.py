@@ -15,7 +15,6 @@ import serial
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SocketServer import ThreadingMixIn
 
-isShowing = False
 LOCALHOST = "127.0.0.1"
 
 instrument = None 
